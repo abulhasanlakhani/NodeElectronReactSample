@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron')
+require('dotenv').config()
 
 // Keep a reference for dev mode
 let dev = false
@@ -50,7 +51,10 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow()
+  require('./src/services/sqlservice')
+})
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -71,8 +75,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-
-const { GetProducts } = require("./src/services/sqlservice")
-
-// This will allow us to use the retreived data in our front-end
-global.Products = GetProducts()
