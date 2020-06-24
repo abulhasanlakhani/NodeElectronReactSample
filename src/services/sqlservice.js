@@ -13,7 +13,7 @@ const readFromDb = (connection, sqlQuery) => {
         let products = []
 
         console.log('Reading rows from the Table...')
-    
+
         // Read all rows from table
         let request = new Request(sqlQuery, (err, rowCount, rows) => {
             if (err) {
@@ -24,7 +24,7 @@ const readFromDb = (connection, sqlQuery) => {
                 connection.close()
             }
         })
-    
+
         request.on('doneInProc', (rowCount, more, rows) => {
             products = []
             rows.map(row => {
@@ -35,7 +35,7 @@ const readFromDb = (connection, sqlQuery) => {
                 products.push(result)
             })
         })
-    
+
         // Execute SQL statement
         connection.execSql(request)
     })
@@ -48,48 +48,31 @@ const readFromDb = (connection, sqlQuery) => {
 const connectToServer = () => {
     return new Promise((resolve, reject) => {
         const config = {
-            // Host or Machine name in this instance
-            // Might try using FQDN or IP of SQL Server on your network
-            // Can either be 'NZDEVBULL2' or 'localhost' if SQLEXPRESS is installed on your own machine
-            // If on KIWINZ network use NIX or NZSTYX or whatever
             server: process.env.DB_SERVER,
-        
             authentication: {
-                // Use Windows Authentication
-                // Set to 'default' to use SQL Server Authentication
                 type: process.env.DB_AUTHTYPE,
-                
                 options: {
-                    // Make sure to set this when you set 'type' as 'ntlm' or Windows Authentication
                     domain: process.env.DB_DOMAIN,
-                    
-                    // username along with the domain will make up the complete login for SQL Server like
-                    // domain\username e.g. KIWINZ\SQA in our case
                     userName: process.env.DB_USERNAME,
                     password: process.env.DB_PASSWORD
                 }
             },
-        
             options: {
                 database: process.env.DB_DBNAME,
-                
-                // This option is only required if you're using SQL Server Express 
-                // with named instance, which is the default setting
-                // Together with the 'server' option this will make up to 'NZDEVBULL2\SQLEXPRESS'
                 instanceName: process.env.DB_INSTANCENAME,
-                
+
                 // These two settings are really important to make successfull connection
                 encrypt: false,
                 trustServerCertificate: false,
-        
+
                 // This will allow you to access the rows returned. 
                 // See 'doneInProc' event below
                 rowCollectionOnDone: true
             }
         }
-        
+
         let connection = new Connection(config)
-    
+
         connection.connect()
 
         connection.on('connect', function (err) {
@@ -103,7 +86,7 @@ const connectToServer = () => {
             }
         })
 
-        connection.on('end', () => { console.log("Connection Closed!")})
+        connection.on('end', () => { console.log("Connection Closed!") })
     })
 }
 
@@ -121,5 +104,3 @@ const getProducts = () => {
 }
 
 ipcMain.handle('getproducts', getProducts)
-
-module.exports.getProducts = getProducts
