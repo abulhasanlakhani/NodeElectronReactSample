@@ -72,7 +72,10 @@ module.exports = {
     stats: {
       colors: true,
       chunks: false,
-      children: false
+      children: false,
+      assets: false,
+      modules: false,
+      entrypoints: false
     },
     before() {
       spawn(
