@@ -18,6 +18,11 @@ In order for us to connect to the database and query it we will require credenti
 Create the following environment variables that are required to use [TediousJS](http://tediousjs.github.io/tedious/index.html) correctly and connect our database server, as shown:
 
 ```dosini
+# Host or Machine name in this instance
+# Might try using FQDN or IP of SQL Server on your network
+# Can either be your machine name or the machine on the network
+# or 'localhost' if SQLEXPRESS is installed on your own machine
+# If you on corporate domain network use your own internal SQL Server name
 DB_SERVER=server
 DB_USERNAME=username
 DB_PASSWORD=password

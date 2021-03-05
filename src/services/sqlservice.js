@@ -3,45 +3,6 @@ const Request = require("tedious").Request
 const { ipcMain } = require('electron')
 
 /**
- * Read data from the database
- * @param 'connection' connection object to use to connect to DB
- * @param 'sqlQuery' sqlQuery as a string to be executed against the database
- * @returns 'Promise' A promise object with either collection of data or an error
-*/
-const readFromDb = (connection, sqlQuery) => {
-    return new Promise((resolve, reject) => {
-        let products = []
-
-        console.log('Reading rows from the Table...')
-
-        // Read all rows from table
-        let request = new Request(sqlQuery, (err, rowCount, rows) => {
-            if (err) {
-                reject(err)
-            } else {
-                console.log(rowCount + ' row(s) returned')
-                resolve(products)
-                connection.close()
-            }
-        })
-
-        request.on('doneInProc', (rowCount, more, rows) => {
-            products = []
-            rows.map(row => {
-                let result = {}
-                row.map(child => {
-                    result[child.metadata.colName] = child.value
-                })
-                products.push(result)
-            })
-        })
-
-        // Execute SQL statement
-        connection.execSql(request)
-    })
-}
-
-/**
  * Connect to the database
  * @returns 'Promise' A promise object containing an open connection to the database
 */
@@ -87,6 +48,45 @@ const connectToServer = () => {
         })
 
         connection.on('end', () => { console.log("Connection Closed!") })
+    })
+}
+
+/**
+ * Read data from the database
+ * @param 'connection' connection object to use to connect to DB
+ * @param 'sqlQuery' sqlQuery as a string to be executed against the database
+ * @returns 'Promise' A promise object with either collection of data or an error
+*/
+const readFromDb = (connection, sqlQuery) => {
+    return new Promise((resolve, reject) => {
+        let products = []
+
+        console.log('Reading rows from the Table...')
+
+        // Read all rows from table
+        let request = new Request(sqlQuery, (err, rowCount, rows) => {
+            if (err) {
+                reject(err)
+            } else {
+                console.log(rowCount + ' row(s) returned')
+                resolve(products)
+                connection.close()
+            }
+        })
+
+        request.on('doneInProc', (rowCount, more, rows) => {
+            products = []
+            rows.map(row => {
+                let result = {}
+                row.map(child => {
+                    result[child.metadata.colName] = child.value
+                })
+                products.push(result)
+            })
+        })
+
+        // Execute SQL statement
+        connection.execSql(request)
     })
 }
 
