@@ -40,7 +40,7 @@
     "typescript": "^3.9.5",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.3"
+    "webpack-dev-server": "^4.13.0"
   },
   "scripts": {
     "start": "webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js  --mode development",
